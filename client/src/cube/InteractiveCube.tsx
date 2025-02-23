@@ -4,6 +4,8 @@ import { OrbitControls } from '@react-three/drei';
 import RubiksCube from '../utils/Cube';
 import { Raycaster, Vector2, Mesh } from 'three';
 import Cubelet from './Cublet';
+import { Button } from '@mui/material';
+import './InteractiveCube.css';
 
 interface CubePiece {
   position: [number, number, number];
@@ -12,12 +14,16 @@ interface CubePiece {
 
 const rubiksCube = new RubiksCube();
 
+const solve = () => { 
+  return rubiksCube.solve(); 
+};
+
+const scramble = () => { 
+  return rubiksCube.scramble(); 
+};
+
 // Component to handle cube interaction
-const CubeInteraction = ({
-  setPieces,
-}: {
-  setPieces: React.Dispatch<React.SetStateAction<CubePiece[]>>;
-}) => {
+const CubeInteraction = ({setPieces}: {setPieces: React.Dispatch<React.SetStateAction<CubePiece[]>>;}) => {
   const { camera, scene } = useThree();
   const raycaster = new Raycaster();
 
@@ -36,30 +42,31 @@ const CubeInteraction = ({
 
     // Find objects that were clicked
     const intersects = raycaster.intersectObjects(scene.children, true);
-    
+
     if (intersects.length > 0) {
       const cubelet = intersects.find((intersect) => intersect.object.userData.isCubelet)?.object;
 
       // Ensure only cubelets are processed
-      console.log(cubelet);
       if (!cubelet) return;
-
+      console.log(cubelet);
       const { x, y, z } = cubelet.position;
 
       // Determine which side to rotate
       let side: 'front' | 'back' | 'left' | 'right' | 'up' | 'down' | null = null;
 
-      if (Math.abs(y - 1) < 0.2) {
+      console.log(x, y, z);
+
+      if (y === 1) {
         side = 'up';
-      } else if (Math.abs(y + 1) < 0.2) {
+      } else if (y === -1) {
         side = 'down';
-      } else if (Math.abs(z - 1) < 0.2) {
+      } else if (z === 1) {
         side = 'front';
-      } else if (Math.abs(z + 1) < 0.2) {
+      } else if (z === -1) {
         side = 'back';
-      } else if (Math.abs(x - 1) < 0.2) {
+      } else if (x === 1) {
         side = 'right';
-      } else if (Math.abs(x + 1) < 0.2) {
+      } else if (x === -1) {
         side = 'left';
       }
 
@@ -85,15 +92,19 @@ const InteractiveCube = () => {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <Canvas style={{ width: '100%', height: '100%' }} camera={{ position: [5, 5, 5], fov: 25 }}>
+      <Canvas style={{ width: '100%', height: '90%' }} camera={{ position: [5, 5, 5], fov: 50 }}>
         <ambientLight intensity={0.9} />
         <pointLight position={[10, 10, 10]} />
         {pieces.map((piece, index) => (
           <Cubelet key={index} position={piece.position} colors={piece.colors} />
         ))}
         <CubeInteraction setPieces={setPieces} />
-        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+        <OrbitControls enablePan={false} enableZoom={true} enableRotate={true} />
       </Canvas>
+      <div id='options'>
+        <Button variant="contained" color="warning" onClick={() => {setPieces(scramble())}}>Scramble</Button>
+        <Button variant="contained" color="success" onClick={() => {setPieces(solve())}}>Solve</Button>
+      </div>
     </div>
   );
 };
