@@ -49,7 +49,7 @@ class RubiksCube {
             if (piece.position[axis === 'x' ? 0 : axis === 'y' ? 1 : 2] === layer) {
                 let [x, y, z] = piece.position;
                 let colors = [...piece.colors];
-                console.log(axis);
+
                 if (axis === 'x') {
                     [y, z] = direction === 'clockwise' ? [-z, y] : [z, -y];
                     colors = direction === 'clockwise'
