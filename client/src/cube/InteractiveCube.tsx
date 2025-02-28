@@ -5,12 +5,8 @@ import RubiksCube from '../utils/Cube';
 import { Raycaster, Vector2, Mesh } from 'three';
 import Cubelet from './Cublet';
 import { Button } from '@mui/material';
+import { CubePiece } from './Cube.Interface';
 import './InteractiveCube.css';
-
-interface CubePiece {
-  position: [number, number, number];
-  colors: string[];
-}
 
 const rubiksCube = new RubiksCube();
 
@@ -22,21 +18,18 @@ const scramble = () => {
   return rubiksCube.scramble(); 
 };
 
-// Component to handle cube interaction
 const CubeInteraction = ({ setPieces }: { setPieces: React.Dispatch<React.SetStateAction<CubePiece[]>> }) => {
   const { camera, scene } = useThree();
   const raycaster = new Raycaster();
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [mouseDownPosition, setMouseDownPosition] = useState<{ x: number; y: number } | null>(null);
 
-  // Handle mouse down
   const handlePointerDown = (event: ThreeEvent<MouseEvent>) => {
     setIsMouseDown(true); // Track when mouse is down
     setMouseDownPosition({ x: event.clientX, y: event.clientY }); // Store the initial mouse position
     event.stopPropagation();
   };
 
-  // Handle mouse up
   const handlePointerUp = (event: ThreeEvent<MouseEvent>) => {
     if (isMouseDown && mouseDownPosition) {
       event.stopPropagation();
@@ -57,21 +50,15 @@ const CubeInteraction = ({ setPieces }: { setPieces: React.Dispatch<React.SetSta
         -(event.clientY / window.innerHeight) * 2 + 1
       );
 
-      // Set the raycaster from the camera through the mouse position
       raycaster.setFromCamera(mouse, camera);
-
-      // Find objects that were clicked
       const intersects = raycaster.intersectObjects(scene.children, true);
 
       if (intersects.length > 0) {
         const cubelet = intersects.find((intersect) => intersect.object.userData.isCubelet)?.object;
 
-        // Ensure only cubelets are processed
         if (!cubelet) return;
 
         const { x, y, z } = cubelet.position;
-
-        // Determine which side to rotate
         let side: 'front' | 'back' | 'left' | 'right' | 'up' | 'down' | null = null;
 
         console.log(x, y, z);
@@ -97,8 +84,9 @@ const CubeInteraction = ({ setPieces }: { setPieces: React.Dispatch<React.SetSta
         }
       }
     }
-    setIsMouseDown(false); // Reset mouse down state
-    setMouseDownPosition(null); // Clear the stored mouse position
+
+    setIsMouseDown(false);
+    setMouseDownPosition(null);
   };
 
   return (
@@ -109,14 +97,13 @@ const CubeInteraction = ({ setPieces }: { setPieces: React.Dispatch<React.SetSta
   );
 };
 
-// Main App component
 const InteractiveCube = () => {
   const [pieces, setPieces] = useState<CubePiece[]>(rubiksCube.pieces);
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <Canvas style={{ width: '100%', height: '90%' }} camera={{ position: [5, 5, 5], fov: 50 }}>
-        <ambientLight intensity={0.9} />
+        <ambientLight intensity={1} />
         <pointLight position={[10, 10, 10]} />
         {pieces.map((piece, index) => (
           <Cubelet key={index} position={piece.position} colors={piece.colors} />

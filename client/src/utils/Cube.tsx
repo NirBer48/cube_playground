@@ -1,21 +1,20 @@
+import { CubePiece } from "../cube/Cube.Interface";
+
 class RubiksCube {
-    pieces: Array<{ position: [number, number, number]; colors: string[] }>;
+    pieces: CubePiece[];
 
     constructor() {
         this.pieces = [];
         this.initialize();
     }
 
-    // Initialize the cube with the correct colors and positions
     initialize() {
-        this.pieces = []; // Reset the pieces array
+        this.pieces = [];
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
                 for (let z = -1; z <= 1; z++) {
-                    // Skip the center piece (it's not visible)
                     if (x === 0 && y === 0 && z === 0) continue;
 
-                    // Assign colors based on the position of the cubelet
                     const colors = [
                         x === 1 ? 'red' : 'gray',     // Right
                         x === -1 ? 'orange' : 'gray', // Left
@@ -25,14 +24,12 @@ class RubiksCube {
                         z === -1 ? 'green' : 'gray',  // Back
                     ];
 
-                    // Add the cubelet to the pieces array
                     this.pieces.push({ position: [x, y, z], colors });
                 }
             }
         }
     }
 
-    // Rotate a side of the cube
     rotateSide(side: 'front' | 'back' | 'left' | 'right' | 'up' | 'down', direction: 'clockwise' | 'counterclockwise') {
         const sideMap: Record<'front' | 'back' | 'left' | 'right' | 'up' | 'down', { axis: string; layer: number }> = {
             front: { axis: 'z', layer: 1 },
@@ -53,8 +50,8 @@ class RubiksCube {
                 if (axis === 'x') {
                     [y, z] = direction === 'clockwise' ? [-z, y] : [z, -y];
                     colors = direction === 'clockwise'
-                        ? [colors[0], colors[1], colors[5], colors[4], colors[2], colors[3]]  // Front → Bottom, Bottom → Back, Back → Top, Top → Front
-                        : [colors[0], colors[1], colors[4], colors[5], colors[3], colors[2]]; // Front ← Top, Top ← Back, Back ← Bottom, Bottom ← Front
+                        ? [colors[0], colors[1], colors[5], colors[4], colors[2], colors[3]]
+                        : [colors[0], colors[1], colors[4], colors[5], colors[3], colors[2]];
                 }
                 else if (axis === 'y') {
                     [x, z] = direction === 'clockwise' ? [z, -x] : [-z, x];
@@ -65,8 +62,8 @@ class RubiksCube {
                 else if (axis === 'z') {
                     [x, y] = direction === 'clockwise' ? [-y, x] : [y, -x];
                     colors = direction === 'clockwise'
-                        ? [colors[3], colors[2], colors[0], colors[1], colors[4], colors[5]]  // Left → Top, Top → Right, Right → Bottom, Bottom → Left
-                        : [colors[2], colors[3], colors[1], colors[0], colors[4], colors[5]]; // Left ← Bottom, Bottom ← Right, Right ← Top, Top ← Left
+                        ? [colors[3], colors[2], colors[0], colors[1], colors[4], colors[5]]
+                        : [colors[2], colors[3], colors[1], colors[0], colors[4], colors[5]];
                 }
 
                 return { ...piece, position: [x, y, z], colors };
@@ -76,7 +73,6 @@ class RubiksCube {
         });
     }
 
-    // Scramble the cube
     scramble() {
         const sides = ['front', 'back', 'left', 'right', 'up', 'down'] as const;
         
@@ -89,7 +85,6 @@ class RubiksCube {
         return this.pieces;
     }
 
-    // Solve the cube (reset to initial state)
     solve() {
         this.initialize();
 

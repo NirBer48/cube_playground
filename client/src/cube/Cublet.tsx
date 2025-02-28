@@ -11,7 +11,7 @@ const Cubelet = ({ position, colors }: CubePiece) => {
 
     useEffect(() => {
         if (meshRef.current) {
-            meshRef.current.userData.isCubelet = true; // Explicitly set userData
+            meshRef.current.userData.isCubelet = true;
         }
     }, []);
 
