@@ -3,9 +3,9 @@ import { Canvas, useThree, ThreeEvent } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import RubiksCube from '../utils/Cube';
 import { Raycaster, Vector2, Mesh } from 'three';
-import Cubelet from './Cublet';
+import Cubelet from '../utils/Cublet';
 import { Button } from '@mui/material';
-import { CubePiece } from './Cube.Interface';
+import { CubePiece } from '../utils/Cube.Interface';
 import './InteractiveCube.css';
 
 const rubiksCube = new RubiksCube();

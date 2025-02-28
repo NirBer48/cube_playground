@@ -1,4 +1,4 @@
-import { CubePiece } from "../cube/Cube.Interface";
+import { CubePiece } from "./Cube.Interface";
 
 class RubiksCube {
     pieces: CubePiece[];
