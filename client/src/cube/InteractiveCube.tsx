@@ -61,8 +61,6 @@ const CubeInteraction = ({ setPieces }: { setPieces: React.Dispatch<React.SetSta
         const { x, y, z } = cubelet.position;
         let side: 'front' | 'back' | 'left' | 'right' | 'up' | 'down' | null = null;
 
-        console.log(x, y, z);
-
         if (y === 1) {
           side = 'up';
         } else if (y === -1) {
@@ -78,7 +76,6 @@ const CubeInteraction = ({ setPieces }: { setPieces: React.Dispatch<React.SetSta
         }
 
         if (side) {
-          console.log(`Rotating ${side} side`);
           rubiksCube.rotateSide(side, event.button === 2 ? 'counterclockwise' : 'clockwise');
           setPieces([...rubiksCube.pieces]); // Force re-render
         }
